@@ -1,14 +1,19 @@
 import os
 import pytest
-from pathlib import Path
-from app.services.generator import generate_certificate_file
+from app.services.generator import generate_certificate_file, sanitize_filename
 
-def test_generate_png_certificate(tmp_path):
+def test_sanitize_filename():
+    assert sanitize_filename("../../etc/passwd") == "etcpasswd"
+    assert sanitize_filename("John Doe <john@example.com>") == "John_Doe_johnexamplecom"
+    assert sanitize_filename("   ") == "certificate"
+
+def test_generate_png_certificate():
     cert_id = "test-uuid-png-123"
     recipient_name = "Alice Johnson"
     event_name = "Tech Summit 2026"
     course_name = "Advanced FastAPI Masterclass"
     issue_date = "October 07, 2026"
+    organization = "Aereo Software"
 
     file_path = generate_certificate_file(
         certificate_id=cert_id,
@@ -16,6 +21,7 @@ def test_generate_png_certificate(tmp_path):
         event_name=event_name,
         course_name=course_name,
         issue_date=issue_date,
+        organization=organization,
         file_format="png"
     )
 
@@ -23,7 +29,7 @@ def test_generate_png_certificate(tmp_path):
     assert file_path.endswith(".png")
     assert os.path.getsize(file_path) > 1000
 
-def test_generate_pdf_certificate(tmp_path):
+def test_generate_pdf_certificate():
     cert_id = "test-uuid-pdf-456"
     recipient_name = "Bob Smith"
     event_name = "Python Developer Bootcamp"
@@ -54,7 +60,7 @@ def test_generator_raises_error_for_empty_name():
         )
 
 def test_generator_simulated_failure_trigger():
-    with pytest.raises(ValueError, match="Simulated rendering failure"):
+    with pytest.raises(ValueError, match="Rendering failed for recipient"):
         generate_certificate_file(
             certificate_id="trigger-fail-id",
             recipient_name="TRIGGER_FAIL Recipient",

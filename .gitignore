@@ -1,14 +1,22 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 
-# Databases & local storage
+# Databases & local output storage
 *.db
 *.sqlite3
 storage/
+*.png
+*.pdf
 
-# Testing
+# Environment files & secrets
+.env
+.env.*
+*.env
+
+# Testing & Coverage
 .pytest_cache/
 .coverage
 htmlcov/
@@ -17,6 +25,7 @@ htmlcov/
 venv/
 .venv/
 env/
+ENV/
 .vscode/
 .idea/
 .DS_Store
